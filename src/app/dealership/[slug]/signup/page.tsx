@@ -1,15 +1,16 @@
 "use client";
 
-import { Button, Checkbox, Form, Input, Spinner } from "@nextui-org/react";
+import { useParams, useRouter } from "next/navigation";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { databases, createCustomer } from "@/app/lib/appwrite";
+import { Query } from "appwrite";
 import Image from "next/image";
-import React, { useState, ChangeEvent, FormEvent } from "react"; // Import ChangeEvent & FormEvent
-import { useRouter } from "next/navigation";
+import { Form, Input, Checkbox, Button, Spinner } from "@nextui-org/react";
 
 interface FormData {
   name: string;
   email: string;
   phone: string;
-  countryCode: string;
   terms: boolean;
 }
 
@@ -20,12 +21,15 @@ interface FieldErrors {
   terms: boolean;
 }
 
-const WelcomeSignup = () => {
+const SignupPage = () => {
+  const { slug } = useParams();
+  const [dealershipName, setDealershipName] = useState<string | null>(null);
+  const [dealershipId, setDealershipId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     phone: "",
-    countryCode: "+61",
     terms: false,
   });
 
@@ -36,9 +40,34 @@ const WelcomeSignup = () => {
     terms: false,
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [appwriteError, setAppwriteError] = useState<string | null>(null);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (slug && typeof slug === "string") {
+      const fetchDealership = async () => {
+        try {
+          const response = await databases.listDocuments(
+            "67871d61002bf7e6bc9e",
+            "6787245c001ae86f7902",
+            [Query.equal("name", slug.replace(/-/g, " "))]
+          );
+
+          if (response.documents.length > 0) {
+            setDealershipName(response.documents[0].name);
+            setDealershipId(response.documents[0].$id);
+          } else {
+            setError("Dealership not found");
+          }
+        } catch (err) {
+          setError("Failed to fetch dealership");
+        }
+      };
+      fetchDealership();
+    }
+  }, [slug]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -53,20 +82,10 @@ const WelcomeSignup = () => {
     }));
   };
 
-  const handleCountryCodeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      countryCode: e.target.value,
-    }));
-    setFieldErrors((prev) => ({
-      ...prev,
-      phone: false,
-    }));
-  };
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true); // Set loading to true before the request starts
+    setIsSubmitting(true);
+    setAppwriteError(null);
     const errors: FieldErrors = {
       name: false,
       email: false,
@@ -96,27 +115,49 @@ const WelcomeSignup = () => {
     setFieldErrors(errors);
 
     if (Object.values(errors).every((error) => !error)) {
-      console.log("Form submitted successfully", formData);
-      // Reset form data before redirecting
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        countryCode: "+61",
-        terms: false,
-      });
-      setFieldErrors({
-        name: false,
-        email: false,
-        phone: false,
-        terms: false,
-      });
+      try {
+        if (!dealershipId) {
+          throw new Error("Dealership not found");
+        }
+        // Create customer document in Appwrite
+        const { terms, ...customerDataWithoutTerms } = formData;
+        const response = await createCustomer({
+          ...customerDataWithoutTerms,
+          dealerships: [dealershipId],
+        });
+        // Reset form data before redirecting
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          terms: false,
+        });
+        setFieldErrors({
+          name: false,
+          email: false,
+          phone: false,
+          terms: false,
+        });
 
-      // Redirect to the landing page
-      await router.push("/landing");
+        if (response && response.$id) {
+          router.push(`/landing/${response.$id}`);
+        } else {
+          throw new Error("Failed to redirect after creation");
+        }
+      } catch (error: any) {
+        setAppwriteError(error.message || "Failed to create customer");
+      }
     }
-    setIsSubmitting(false); // Set loading to false after the submission (whether successful or not)
+    setIsSubmitting(false);
   };
+
+  if (error) {
+    return <div style={{ color: "red" }}>{error}</div>;
+  }
+
+  if (!dealershipName) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="border max-w-sm min-h-screen mx-auto py-12 px-8">
@@ -130,7 +171,9 @@ const WelcomeSignup = () => {
           className="size-[63px]"
         />
         <div className="text-center">
-          <h1 className="text-xs font-semibold mt-3">Lennock Volkswagen</h1>
+          <h1 className="text-xs font-semibold mt-3 text-black">
+            {dealershipName}
+          </h1>
           <p className="text-color2 text-[8px]">POWERED BY ALEXIUM</p>
         </div>
       </div>
@@ -138,7 +181,9 @@ const WelcomeSignup = () => {
       {/* body */}
       <div className="mt-16">
         <div>
-          <h2 className="text-[25px] font-medium">Welcome to Alexium</h2>
+          <h2 className="text-[25px] font-medium">
+            Welcome to {dealershipName}
+          </h2>
           <h3 className="text-base mt-3">Thank you for visiting us today.</h3>
           <p className="text-xs text-color2 mt-3">
             We're excited to help you find your perfect vehicle and provide you
@@ -198,37 +243,6 @@ const WelcomeSignup = () => {
               inputWrapper: "bg-color3 rounded-md",
             }}
           />
-          <div className="flex gap-2 relative">
-            <select
-              className="bg-color3 rounded-md py-3 w-[80px] text-color2 text-sm relative top-[2px]"
-              onChange={handleCountryCodeChange}
-              value={formData.countryCode}
-            >
-              <option value="+61">🇦🇺 +61</option>
-              <option value="+1">🇺🇸 +1</option>
-              <option value="+44">🇬🇧 +44</option>
-              <option value="+91">🇮🇳 +91</option>
-            </select>
-            <Input
-              type="tel"
-              size="sm"
-              name="phone"
-              placeholder=""
-              value={formData.phone}
-              onChange={handleChange}
-              isInvalid={fieldErrors.phone}
-              errorMessage={
-                fieldErrors.phone
-                  ? !formData.phone
-                    ? "Phone number is required"
-                    : "Invalid phone number format. Use 8 to 11 digits"
-                  : ""
-              }
-              classNames={{
-                inputWrapper: "bg-color3 rounded-md w-full",
-              }}
-            />
-          </div>
 
           <div className="flex flex-col gap-2">
             <Checkbox
@@ -249,7 +263,9 @@ const WelcomeSignup = () => {
               </span>
             )}
           </div>
-
+          {appwriteError && (
+            <span className="text-red-500 text-xs mt-2">{appwriteError}</span>
+          )}
           <Button
             type="submit"
             className="bg-color1 w-full mt-10 text-white"
@@ -263,4 +279,4 @@ const WelcomeSignup = () => {
   );
 };
 
-export default WelcomeSignup;
+export default SignupPage;
