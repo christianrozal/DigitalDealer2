@@ -1,10 +1,11 @@
 // app/lib/appwrite.js
 import { Client, Databases } from "appwrite";
 
-const projectId = "6780c774003170c68252";
-const databaseId = "67871d61002bf7e6bc9e";
-const dealershipsId = "6787245c001ae86f7902";
-const customersId = "678724210037c2b3b179";
+const projectId = process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID;
+const databaseId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
+const dealershipsId = process.env.NEXT_PUBLIC_APPWRITE_DEALERSHIPS_ID;
+const customersId = process.env.NEXT_PUBLIC_APPWRITE_CUSTOMERS_ID;
+
 
 const client = new Client()
     .setEndpoint("https://cloud.appwrite.io/v1")
@@ -12,24 +13,12 @@ const client = new Client()
 
 const databases = new Databases(client);
 
-// Function to get dealerships
-const getDealerships = async () => {
-    try {
-        const response = await databases.listDocuments(
-            databaseId,
-            dealershipsId,
-            []
-        );
-        return response.documents;
-    } catch (e) {
-        console.error("Error fetching dealerships", e);
-        throw e;
-    }
-};
-
 // Function to create a customer document
 const createCustomer = async (customerData) => {
-    try {
+     try {
+         if(!databaseId || !customersId){
+             throw new Error("Database or Customer ids are not defined");
+         }
         const response = await databases.createDocument(
             databaseId,
             customersId,
@@ -38,8 +27,10 @@ const createCustomer = async (customerData) => {
         );
         return response;
     } catch (e) {
-        console.error("Error creating customer document", e);
-        throw e;
+         console.error("Error creating customer document", e);
+       throw e;
     }
 };
-export { client, databases, getDealerships, createCustomer };
+
+
+export { client, databases, getDealerships, createCustomer, databaseId, dealershipsId };

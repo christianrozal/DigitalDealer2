@@ -1,11 +1,11 @@
 "use client";
-
 import { useParams, useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { databases, createCustomer } from "@/app/lib/appwrite";
 import { Query } from "appwrite";
 import Image from "next/image";
 import { Form, Input, Checkbox, Button, Spinner } from "@nextui-org/react";
+import { databaseId, dealershipsId } from "@/app/lib/appwrite";
 
 interface FormData {
   name: string;
@@ -49,9 +49,12 @@ const SignupPage = () => {
     if (slug && typeof slug === "string") {
       const fetchDealership = async () => {
         try {
+          if (!databaseId || !dealershipsId) {
+            throw new Error("Database or Dealership ids are not defined");
+          }
           const response = await databases.listDocuments(
-            "67871d61002bf7e6bc9e",
-            "6787245c001ae86f7902",
+            databaseId,
+            dealershipsId,
             [Query.equal("name", slug.replace(/-/g, " "))]
           );
 
