@@ -33,4 +33,4 @@ const createCustomer = async (customerData) => {
 };
 
 
-export { client, databases, getDealerships, createCustomer, databaseId, dealershipsId };
+export { client, databases, createCustomer, databaseId, dealershipsId };
