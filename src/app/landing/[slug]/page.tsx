@@ -59,7 +59,7 @@ const LandingPage = () => {
       {/* QR Link */}
       <Link href={`/landing/${slug}/qr`}>
         <p className="font-semibold text-xs text-color2 underline text-center mt-20 hover:opacity-70">
-          Consultant's QR code
+          Consultant&apos;s QR code
         </p>
       </Link>
     </div>
