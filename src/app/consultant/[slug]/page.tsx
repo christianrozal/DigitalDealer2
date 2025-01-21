@@ -2,11 +2,9 @@
 import { Button } from "@heroui/react";
 import Image from "next/image";
 import React, { useState } from "react";
-import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ConsultantSlugPage = () => {
-  const { slug } = useParams();
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const generateVCard = () => {
