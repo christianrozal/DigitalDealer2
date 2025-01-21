@@ -61,7 +61,7 @@ const SignupPage = () => {
       }
     };
     checkUserSession();
-  }, []);
+  }, [router, slug]);
 
   useEffect(() => {
     if (slug && typeof slug === "string") {
@@ -82,8 +82,14 @@ const SignupPage = () => {
           } else {
             setError("Dealership not found");
           }
-        } catch (err) {
-          setError("Failed to fetch dealership");
+        } catch (err: unknown) {
+          let errorMessage = "Failed to fetch dealership";
+          if (err instanceof Error) {
+            errorMessage = err.message;
+          } else if (typeof err === "string") {
+            errorMessage = err;
+          }
+          setError(errorMessage);
         }
       };
       fetchDealership();
@@ -139,18 +145,24 @@ const SignupPage = () => {
         if (!dealershipId) {
           throw new Error("Dealership not found");
         }
-        let user;
+        let user; // we are assigning the value to this but not using it
         try {
-          user = await createUser(formData.email, "password123", formData.name);
-        } catch (e: any) {
-          if (e.code === 409) {
+          await createUser(formData.email, "password123", formData.name);
+        } catch (e: unknown) {
+          if ((e as any).code === 409) {
             //If user already exists, login using session
-            user = await account.createEmailPasswordSession(
+            await account.createEmailPasswordSession(
               formData.email,
               "password123"
             );
           } else {
-            throw e;
+            let errorMessage = "Failed to create user";
+            if (e instanceof Error) {
+              errorMessage = e.message;
+            } else if (typeof e === "string") {
+              errorMessage = e;
+            }
+            throw new Error(errorMessage);
           }
         }
         // Check if customer already exists
@@ -180,7 +192,7 @@ const SignupPage = () => {
           }
         } else {
           // Create customer document in Appwrite
-          const { terms, ...customerDataWithoutTerms } = formData;
+          const { terms: _, ...customerDataWithoutTerms } = formData; // remove terms
           response = await createCustomer({
             ...customerDataWithoutTerms,
             dealerships: [dealershipId],
@@ -206,8 +218,14 @@ const SignupPage = () => {
         } else {
           throw new Error("Failed to redirect after creation");
         }
-      } catch (error: any) {
-        setAppwriteError(error.message || "Failed to create customer");
+      } catch (error: unknown) {
+        let errorMessage = "Failed to create customer";
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (typeof error === "string") {
+          errorMessage = error;
+        }
+        setAppwriteError(errorMessage);
       }
     }
     setIsSubmitting(false);
@@ -248,8 +266,8 @@ const SignupPage = () => {
           </h2>
           <h3 className="text-base mt-3">Thank you for visiting us today.</h3>
           <p className="text-xs text-color2 mt-3">
-            We&apos;re excited to help you find your perfect vehicle and provide
-            you with personalised service.
+            We're excited to help you find your perfect vehicle and provide you
+            with personalised service.
           </p>
         </div>
         {/* Input */}
@@ -317,7 +335,7 @@ const SignupPage = () => {
                 label: "text-[10px] text-color2",
               }}
             >
-              I agree to Alexium&apos;s Privacy Policy and Terms of Use.
+              I agree to Alexium's Privacy Policy and Terms of Use.
             </Checkbox>
             {fieldErrors.terms && (
               <span className="text-red-500 text-xs">
