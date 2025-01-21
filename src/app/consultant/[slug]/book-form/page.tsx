@@ -162,8 +162,8 @@ const BookFormPage = () => {
       </div>
 
       {selectedDate && selectedTime && (
-        <div className="mt-4 bg-white border p-3 rounded-md">
-          <p className="font-semibold text-sm">
+        <div className="mt-10 bg-white border p-3 rounded-md">
+          <p className="font-semibold text-sm text-gray-700">
             {dayjs(selectedDate, "YYYY-MM-DD").format("dddd, MMMM D")}
           </p>
           <p className="text-color2 text-sm mt-1">{selectedTime}</p>
