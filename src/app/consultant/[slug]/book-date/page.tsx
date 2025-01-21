@@ -62,8 +62,9 @@ const BookDatePage = () => {
   ];
 
   // Month selection handler
-  const handleMonthChange = (keys: any) => {
-    const selected = Array.from(keys as Set<string>)[0];
+  const handleMonthChange = (keys: unknown) => {
+    const keySet = keys as Set<string>;
+    const selected = Array.from(keySet)[0];
     if (!selected) return;
 
     const [year, month] = selected.split("-").map(Number);
