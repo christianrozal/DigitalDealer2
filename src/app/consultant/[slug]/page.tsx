@@ -42,7 +42,7 @@ END:VCARD`;
       />
       <div className="flex flex-col items-center justify-center shadow-md p-10 mt-20">
         <div className="bg-color1 text-white font-bold w-[100px] h-[100px] text-4xl rounded-full flex items-center justify-center">
-          AB
+          AL
         </div>
         <h2 className="font-nunito font-semibold mt-4">Alex Bompane</h2>
         <p className="text-xs text-color2 mt-2">Sales Consultant</p>
