@@ -1,12 +1,9 @@
 "use client";
 
-import { Button } from "@heroui/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 const AppointmentBookedPage = () => {
-  const router = useRouter();
   return (
     <div className="border max-w-sm min-h-screen mx-auto py-4 px-10">
       <Image
