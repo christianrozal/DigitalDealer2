@@ -1,10 +1,11 @@
 // app/lib/appwrite.ts
-import { Client, Databases, Account, Models } from "appwrite";
+import { Client, Databases, Account, Models, ID } from "appwrite";
 
 const projectId = process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID as string;
 const databaseId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string;
 const dealershipsId = process.env.NEXT_PUBLIC_APPWRITE_DEALERSHIPS_ID as string;
 const customersId = process.env.NEXT_PUBLIC_APPWRITE_CUSTOMERS_ID as string;
+const consultantsId = process.env.NEXT_PUBLIC_APPWRITE_CONSULTANTS_ID as string;
 
 const client = new Client()
     .setEndpoint("https://cloud.appwrite.io/v1")
@@ -96,4 +97,4 @@ const checkSession = async (): Promise<boolean> => {
     }
 };
 
-export { client, databases, createCustomer, databaseId, customersId, dealershipsId, checkSession, account, createUser, createUserSession };
+export { client, databases, createCustomer, databaseId, customersId, dealershipsId, checkSession, account, createUser, createUserSession, consultantsId, ID  };

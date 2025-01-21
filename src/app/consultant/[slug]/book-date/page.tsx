@@ -1,28 +1,32 @@
 "use client";
-
 import { Button, Select, SelectItem } from "@heroui/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import React from "react";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import updateLocale from "dayjs/plugin/updateLocale";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/lib/store";
+import { setBookingDateTime } from "@/app/lib/features/bookingDateSlice";
 
 dayjs.extend(isoWeek);
 dayjs.extend(updateLocale);
 
-// Set week to start on Sunday (0)
 dayjs.updateLocale("en", {
   weekStart: 0,
 });
 
 const BookDatePage = () => {
   const router = useRouter();
-  const [currentMonth, setCurrentMonth] = useState(dayjs());
-  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const { slug } = useParams();
+  const dispatch = useDispatch<AppDispatch>();
+  const [currentMonth, setCurrentMonth] = React.useState(dayjs());
+  const [selectedDate, setSelectedDate] = React.useState<dayjs.Dayjs | null>(
+    null
+  );
+  const [selectedTime, setSelectedTime] = React.useState<string | null>(null);
 
-  // Generate month options for dropdown
   const generateMonthOptions = () => {
     const currentYear = currentMonth.year();
     return Array.from({ length: 12 }, (_, i) => ({
@@ -31,7 +35,6 @@ const BookDatePage = () => {
     }));
   };
 
-  // Generate calendar grid with Sunday-first weeks
   const generateCalendar = () => {
     const startOfMonth = currentMonth.startOf("month");
     const endOfMonth = currentMonth.endOf("month");
@@ -51,7 +54,6 @@ const BookDatePage = () => {
     return calendar;
   };
 
-  // Time slots
   const timeSlots = [
     "10:00 AM",
     "10:30 AM",
@@ -61,7 +63,6 @@ const BookDatePage = () => {
     "2:30 PM",
   ];
 
-  // Month selection handler
   const handleMonthChange = (keys: unknown) => {
     const keySet = keys as Set<string>;
     const selected = Array.from(keySet)[0];
@@ -71,28 +72,33 @@ const BookDatePage = () => {
     setCurrentMonth(dayjs().year(year).month(month));
   };
 
-  // Navigation handlers
   const handlePreviousMonth = () =>
     setCurrentMonth(currentMonth.subtract(1, "month"));
+
   const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
 
-  // Reset selection
   const handleReset = () => {
     setSelectedDate(null);
     setSelectedTime(null);
   };
 
-  // Booking handler
   const handleBookNow = () => {
-    if (!selectedDate || !selectedTime) {
+    if (!selectedDate || !selectedTime || !slug) {
       alert("Please select both date and time");
       return;
     }
-    router.push(
-      `/consultant/[slug]/book-form?date=${selectedDate.format(
-        "YYYY-MM-DD"
-      )}&time=${selectedTime}`
+
+    // Save to Redux store
+    dispatch(
+      setBookingDateTime({
+        date: selectedDate.format("YYYY-MM-DD"),
+        time: selectedTime,
+        consultantId: slug as string,
+      })
     );
+
+    // Navigate without URL params
+    router.push(`/consultant/${slug}/book-form`);
   };
 
   return (
@@ -103,6 +109,11 @@ const BookDatePage = () => {
         height={17}
         alt="Alexium Logo"
         className="mx-auto"
+        priority
+        style={{
+          width: "79px",
+          height: "auto",
+        }}
       />
       <div className="flex gap-5 items-center mt-10">
         <Image
@@ -111,7 +122,11 @@ const BookDatePage = () => {
           height={16}
           alt="Back"
           className="hover:opacity-70 cursor-pointer"
-          onClick={() => router.push("/consultant/[slug]")}
+          onClick={() => router.push(`/consultant/${slug}`)}
+          style={{
+            width: "16px",
+            height: "16px",
+          }}
         />
         <h2 className="text-2xl font-semibold">Select Date and Time</h2>
       </div>
@@ -123,7 +138,7 @@ const BookDatePage = () => {
             selectedKeys={
               new Set([`${currentMonth.year()}-${currentMonth.month()}`])
             }
-            onSelectionChange={(keys) => handleMonthChange(keys)}
+            onSelectionChange={handleMonthChange}
             className="w-48"
             variant="underlined"
             classNames={{
@@ -136,7 +151,6 @@ const BookDatePage = () => {
               </SelectItem>
             ))}
           </Select>
-          {/* Smart underline hack: White overlay hides HeroUI's default underline */}
           <div className="absolute -bottom-1 bg-white h-2 w-full" />
         </div>
 
@@ -150,6 +164,10 @@ const BookDatePage = () => {
               width={16}
               height={16}
               alt="Previous Month"
+              style={{
+                width: "16px",
+                height: "16px",
+              }}
             />
           </button>
           <button onClick={handleNextMonth} className="hover:opacity-70 p-1">
@@ -158,6 +176,10 @@ const BookDatePage = () => {
               width={16}
               height={16}
               alt="Next Month"
+              style={{
+                width: "16px",
+                height: "16px",
+              }}
             />
           </button>
         </div>
@@ -176,7 +198,7 @@ const BookDatePage = () => {
             {week.map((date, dayIndex) => {
               const isCurrentMonth = date.month() === currentMonth.month();
               const isSelected = selectedDate?.isSame(date, "day");
-              const isWeekend = [0, 6].includes(date.day()); // 0 = Sunday, 6 = Saturday
+              const isWeekend = [0, 6].includes(date.day());
               const isDisabled =
                 !isCurrentMonth || date.isBefore(dayjs(), "day") || isWeekend;
 
