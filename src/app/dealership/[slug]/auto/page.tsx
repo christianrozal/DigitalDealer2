@@ -100,8 +100,8 @@ const AutoRecognitionPage = () => {
         <h2 className="font-medium text-2xl">Welcome back, {firstName}!</h2>
         <p className="mt-3">Thank you for visiting us today.</p>
         <p className="mt-3 text-xs text-color2">
-          We're excited to help you find your perfect vehicle and provide you
-          with personalised service.
+          We&apos;re excited to help you find your perfect vehicle and provide
+          you with personalised service.
         </p>
       </div>
       <div className="flex gap-3 items-center border rounded-lg p-3 mt-10">
