@@ -1,12 +1,12 @@
 "use client";
 import { Button } from "@heroui/react";
 import Image from "next/image";
-import React from "react";
-import { useParams, useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { useParams } from "next/navigation";
 
 const ConsultantSlugPage = () => {
   const { slug } = useParams();
-  const router = useRouter();
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const generateVCard = () => {
     const vCardData = `BEGIN:VCARD
@@ -21,6 +21,14 @@ URL:www.alexium.com.au
 END:VCARD`;
     return vCardData;
   };
+
+  const setConfirmation = () => {
+    setShowConfirmation(true);
+    setTimeout(() => {
+      setShowConfirmation(false);
+    }, 2000);
+  };
+
   const handleSaveContact = () => {
     const vCardData = generateVCard();
     const blob = new Blob([vCardData], { type: "text/vcard" });
@@ -31,13 +39,13 @@ END:VCARD`;
     link.download = "Alex Bompane.vcf";
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link); // Clean up the element after download.
-    URL.revokeObjectURL(url); // Revoke the URL after download.
-    router.push(`/consultant/${slug}/save`); // Redirect to save page
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setConfirmation();
   };
 
   return (
-    <div className="border max-w-sm min-h-screen mx-auto py-4 px-10">
+    <div className="border max-w-sm min-h-screen mx-auto py-4 px-10 relative">
       <Image
         src="/alexium-logo-2.webp"
         width={79}
@@ -45,6 +53,16 @@ END:VCARD`;
         alt=""
         className="mx-auto"
       />
+      {/* Shows when saved */}
+      {showConfirmation && (
+        <div
+          className="sticky top-5 flex gap-2 border rounded-md border-color5 py-3 px-3 justify-center items-center mt-10"
+          style={{ boxShadow: "0px 4px 10px 0px rgba(7, 170, 48, 0.25)" }}
+        >
+          <Image src="/icon-check.webp" width={17} height={17} alt="" />
+          <p className="text-xs">Contact Saved</p>
+        </div>
+      )}
       <div className="flex flex-col items-center justify-center shadow-md p-10 mt-20">
         <div className="bg-color1 text-white font-bold w-[100px] h-[100px] text-4xl rounded-full flex items-center justify-center">
           AL
