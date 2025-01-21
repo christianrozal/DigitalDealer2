@@ -51,7 +51,7 @@ END:VCARD`;
       <AnimatePresence>
         {showConfirmation && (
           <motion.div
-            className="fixed top-5 w-[90%] flex gap-2 border rounded-md border-color5 py-3 px-3 justify-center items-center bg-white opacity-100 z-50 left-1/2"
+            className="fixed top-5 max-w-xs w-[90%] flex gap-2 border rounded-md border-color5 py-3 px-3 justify-center items-center bg-white opacity-100 z-50 left-1/2"
             style={{ boxShadow: "0px 4px 10px 0px rgba(7, 170, 48, 0.25)" }}
             initial={{ opacity: 0, y: -50, x: "-50%" }}
             animate={{ opacity: 1, y: 0, x: "-50%" }}
