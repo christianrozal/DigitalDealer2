@@ -18,11 +18,11 @@ const BookFormPage = () => {
       />
       <div className="flex gap-5 items-center mt-10">
         <Image
-          src="/arrow-left.png"
+          src="/arrow-left.svg"
           width={16}
           height={16}
           alt=""
-          className="hover:opacity-70"
+          className="hover:opacity-70 cursor-pointer"
           onClick={() => router.push("/consultant/[slug]/book-date")}
         />
 

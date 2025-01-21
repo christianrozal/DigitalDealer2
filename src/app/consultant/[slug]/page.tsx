@@ -81,25 +81,25 @@ END:VCARD`;
           <p className="text-xs text-color2 mt-2">Sales Consultant</p>
           <div className="flex gap-2 items-center mt-4">
             <Image
-              src="/social-facebook.webp"
+              src="/social-facebook.svg"
               width={25}
               height={25}
               alt="Facebook Icon"
             />
             <Image
-              src="/social-linkedin.webp"
+              src="/social-linkedin.svg"
               width={25}
               height={25}
               alt="Linkedin Icon"
             />
             <Image
-              src="/social-instagram.webp"
+              src="/social-instagram.svg"
               width={25}
               height={25}
               alt="Instagram Icon"
             />
             <Image
-              src="/social-youtube.webp"
+              src="/social-youtube.svg"
               width={25}
               height={25}
               alt="Youtube Icon"
@@ -109,7 +109,7 @@ END:VCARD`;
         <div className="flex flex-col gap-3 text-xs mt-7">
           <div className="flex gap-4 items-center py-3 rounded-md bg-color3 px-5">
             <Image
-              src="/icon-email.webp"
+              src="/icon-email.svg"
               width={17}
               height={17}
               alt="Email Icon"
@@ -118,7 +118,7 @@ END:VCARD`;
           </div>
           <div className="flex gap-4 items-center py-3 rounded-md bg-color3 px-5">
             <Image
-              src="/icon-phone.webp"
+              src="/icon-phone.svg"
               width={17}
               height={17}
               alt="Phone Icon"
@@ -127,7 +127,7 @@ END:VCARD`;
           </div>
           <div className="flex gap-4 items-center py-3 rounded-md bg-color3 px-5">
             <Image
-              src="/icon-website.webp"
+              src="/icon-website.svg"
               width={17}
               height={17}
               alt="Website Icon"
