@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { account } from "./lib/appwrite";
 
+// commit
+
 const Home = () => {
   const router = useRouter();
 
