@@ -153,12 +153,7 @@ const SignupPage = () => {
         try {
           await createUser(formData.email, "password123", formData.name);
         } catch (e: unknown) {
-          if (
-            typeof e === "object" &&
-            e !== null &&
-            "code" in e &&
-            typeof (e as any).code === "number"
-          ) {
+          if (typeof e === "object" && e !== null && "code" in e) {
             //If user already exists, login using session
             if ((e as AppwriteError).code === 409) {
               await account.createEmailPasswordSession(
@@ -277,8 +272,8 @@ const SignupPage = () => {
           </h2>
           <h3 className="text-base mt-3">Thank you for visiting us today.</h3>
           <p className="text-xs text-color2 mt-3">
-            We're excited to help you find your perfect vehicle and provide you
-            with personalised service.
+            We&apos;re excited to help you find your perfect vehicle and provide
+            you with personalised service.
           </p>
         </div>
         {/* Input */}
@@ -346,7 +341,7 @@ const SignupPage = () => {
                 label: "text-[10px] text-color2",
               }}
             >
-              I agree to Alexium's Privacy Policy and Terms of Use.
+              I agree to Alexium&apos;s Privacy Policy and Terms of Use.
             </Checkbox>
             {fieldErrors.terms && (
               <span className="text-red-500 text-xs">
