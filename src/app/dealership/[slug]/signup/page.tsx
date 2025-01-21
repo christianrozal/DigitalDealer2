@@ -29,6 +29,11 @@ interface FieldErrors {
   terms: boolean;
 }
 
+interface AppwriteError {
+  code: number;
+  message: string;
+}
+
 const SignupPage = () => {
   const { slug } = useParams();
   const [dealershipName, setDealershipName] = useState<string | null>(null);
@@ -148,12 +153,19 @@ const SignupPage = () => {
         try {
           await createUser(formData.email, "password123", formData.name);
         } catch (e: unknown) {
-          if ((e as any).code === 409) {
+          if (
+            typeof e === "object" &&
+            e !== null &&
+            "code" in e &&
+            typeof (e as any).code === "number"
+          ) {
             //If user already exists, login using session
-            await account.createEmailPasswordSession(
-              formData.email,
-              "password123"
-            );
+            if ((e as AppwriteError).code === 409) {
+              await account.createEmailPasswordSession(
+                formData.email,
+                "password123"
+              );
+            }
           } else {
             let errorMessage = "Failed to create user";
             if (e instanceof Error) {
