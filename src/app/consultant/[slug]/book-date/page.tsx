@@ -97,7 +97,7 @@ const BookDatePage = () => {
   return (
     <div className="border max-w-sm min-h-screen mx-auto py-4 px-10">
       <Image
-        src="/alexium-logo-2.webp"
+        src="/alexium-logo-2.svg"
         width={79}
         height={17}
         alt="Alexium Logo"

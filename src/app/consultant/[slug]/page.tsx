@@ -66,14 +66,14 @@ END:VCARD`;
       </AnimatePresence>
       <div className="border max-w-sm min-h-screen mx-auto py-4 px-10">
         <Image
-          src="/alexium-logo-2.webp"
+          src="/alexium-logo-2.svg"
           width={79}
           height={17}
           alt=""
           className="mx-auto"
         />
 
-        <div className="flex flex-col items-center justify-center shadow-md p-10 mt-20">
+        <div className="flex flex-col items-center justify-center shadow-md p-10 mt-10 rounded-md">
           <div className="bg-color1 text-white font-bold w-[100px] h-[100px] text-4xl rounded-full flex items-center justify-center">
             AL
           </div>
