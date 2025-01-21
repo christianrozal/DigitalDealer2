@@ -13,7 +13,9 @@ export default {
       colors: {
         color1: "#3D12FA",
         color2: "#6B6B6B",
-        color3: "#F4F8FC"
+        color3: "#F4F8FC",
+        color4: "#018221",
+        color5: "#84C953",
       },
     },
   },
