@@ -55,7 +55,9 @@ export const submitBooking = createAsyncThunk(
       );
       return response;
     } catch (error) {
-      return rejectWithValue("Failed to submit booking");
+        return rejectWithValue(
+            `Failed to submit booking: ${error instanceof Error ? error.message : "Unknown error"}`
+          );
     }
   }
 );
