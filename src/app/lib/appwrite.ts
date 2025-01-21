@@ -14,12 +14,12 @@ const databases = new Databases(client);
 const account = new Account(client);
 
 // Define the type for Customer Data
-interface CustomerData {
+interface CustomerData  {
     email: string;
     firstName?: string;
     lastName?: string;
     phoneNumber?: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 // Function to create a customer document
@@ -91,7 +91,7 @@ const checkSession = async (): Promise<boolean> => {
     try {
         await account.get();
         return true;
-    } catch (error) {
+    } catch {
        return false;
     }
 };
