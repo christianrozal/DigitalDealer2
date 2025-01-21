@@ -145,7 +145,6 @@ const SignupPage = () => {
         if (!dealershipId) {
           throw new Error("Dealership not found");
         }
-        let user; // we are assigning the value to this but not using it
         try {
           await createUser(formData.email, "password123", formData.name);
         } catch (e: unknown) {
