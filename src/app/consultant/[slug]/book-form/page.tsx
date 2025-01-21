@@ -128,6 +128,14 @@ const BookFormPage = () => {
     }
   };
 
+  console.log("Selected Date:", selectedDate);
+  console.log("Selected Time:", selectedTime);
+
+  if (selectedTime) {
+    console.log("Parsed Time:", dayjs(selectedTime, "HH:mm").format("h:mm A"));
+    console.log("Is valid?", dayjs(selectedTime, "HH:mm").isValid());
+  }
+
   return (
     <div className="border max-w-sm min-h-screen mx-auto py-4 px-10">
       <Image
@@ -154,13 +162,11 @@ const BookFormPage = () => {
       </div>
 
       {selectedDate && selectedTime && (
-        <div className="mt-4 bg-color3 p-3 rounded-md">
+        <div className="mt-4 bg-white border p-3 rounded-md">
           <p className="font-semibold text-sm">
-            {dayjs(selectedDate).format("dddd, MMMM D")}
+            {dayjs(selectedDate, "YYYY-MM-DD").format("dddd, MMMM D")}
           </p>
-          <p className="text-color2 text-sm mt-1">
-            {dayjs(selectedTime, "h:mm A").format("h:mm A")}
-          </p>
+          <p className="text-color2 text-sm mt-1">{selectedTime}</p>
         </div>
       )}
 
@@ -194,12 +200,13 @@ const BookFormPage = () => {
           classNames={{ inputWrapper: "bg-color3 rounded-md" }}
         />
         <Textarea
-          label="Special Requests"
+          label="Your message"
+          variant="bordered"
           value={formData.message}
           onChange={(e) =>
             dispatch(setFormField({ field: "message", value: e.target.value }))
           }
-          classNames={{ inputWrapper: "border-gray-300 border rounded-md" }}
+          classNames={{ inputWrapper: "border rounded-md" }}
         />
       </div>
 
