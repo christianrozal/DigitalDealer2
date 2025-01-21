@@ -1,4 +1,4 @@
-import { Avatar, Button } from "@heroui/react";
+import { Button } from "@heroui/react";
 import Image from "next/image";
 import React from "react";
 
@@ -13,10 +13,9 @@ const ConsultantSlugPage = () => {
         className="mx-auto"
       />
       <div className="flex flex-col items-center justify-center shadow-md p-10 mt-20">
-        <Avatar
-          name="AB"
-          className="bg-color1 text-white font-bold w-[100px] h-[100px] text-4xl"
-        />
+        <div className="bg-color1 text-white font-bold w-[100px] h-[100px] text-4xl rounded-full flex items-center justify-center">
+          AB
+        </div>
         <h2 className="font-nunito font-semibold mt-4">Alex Bompane</h2>
         <p className="text-xs text-color2 mt-2">Sales Consultant</p>
         <div className="flex gap-2 items-center mt-4">

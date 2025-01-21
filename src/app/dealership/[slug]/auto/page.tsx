@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { account, databases } from "@/app/lib/appwrite";
 import { Avatar, Button } from "@heroui/react";
@@ -53,8 +53,15 @@ const AutoRecognitionPage = () => {
         } else {
           setError("Customer not found");
         }
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch user details");
+      } catch (err: unknown) {
+        let errorMessage = "Failed to fetch user details";
+        if (err instanceof Error) {
+          errorMessage = err.message;
+        } else if (typeof err === "string") {
+          errorMessage = err;
+        }
+        setError(errorMessage);
+        console.error("Error fetching user data:", err);
       }
     };
     fetchUserData();
