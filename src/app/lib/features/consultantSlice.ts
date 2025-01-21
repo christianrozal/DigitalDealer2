@@ -1,10 +1,10 @@
 // app/lib/features/consultantSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { databases, databaseId, consultantsId } from '../appwrite';
-import { Models } from 'appwrite'; // Import Document type from Appwrite SDK
+import { Models } from 'appwrite';
 
 interface ConsultantState {
-  data: Models.Document | null; // Replace 'any' with Document type
+  data: Models.Document | null;
   loading: boolean;
   error: string | null;
 }
