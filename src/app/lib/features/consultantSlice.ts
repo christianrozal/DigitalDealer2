@@ -1,9 +1,10 @@
 // app/lib/features/consultantSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { databases, databaseId, consultantsId } from '../appwrite';
+import { Models } from 'appwrite'; // Import Document type from Appwrite SDK
 
 interface ConsultantState {
-  data: any;
+  data: Models.Document | null; // Replace 'any' with Document type
   loading: boolean;
   error: string | null;
 }
@@ -25,7 +26,8 @@ export const fetchConsultant = createAsyncThunk(
       );
       return response;
     } catch (error) {
-      throw new Error('Failed to fetch consultant');
+      // Use the caught error in the message
+      throw new Error(`Failed to fetch consultant: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 );

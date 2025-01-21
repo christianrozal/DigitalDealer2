@@ -1,6 +1,5 @@
 // app/lib/features/bookingDateSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import dayjs from "dayjs";
 
 interface BookingDateState {
   selectedDate: string | null;
