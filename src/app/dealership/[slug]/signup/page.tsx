@@ -1,7 +1,15 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { databases, createCustomer } from "@/app/lib/appwrite";
+import {
+  databases,
+  createCustomer,
+  checkSession,
+  account,
+  createUser,
+  createUserSession,
+  customersId,
+} from "@/app/lib/appwrite";
 import { Query } from "appwrite";
 import Image from "next/image";
 import { Form, Input, Checkbox, Button, Spinner } from "@nextui-org/react";
@@ -46,11 +54,21 @@ const SignupPage = () => {
   const router = useRouter();
 
   useEffect(() => {
+    const checkUserSession = async () => {
+      const sessionExists = await checkSession();
+      if (sessionExists) {
+        router.push(`/dealership/${slug}/auto`);
+      }
+    };
+    checkUserSession();
+  }, []);
+
+  useEffect(() => {
     if (slug && typeof slug === "string") {
       const fetchDealership = async () => {
         try {
           if (!databaseId || !dealershipsId) {
-            throw new Error("Database or Dealership ids are not defined");
+            throw new Error("Database or Dealerships ids are not defined");
           }
           const response = await databases.listDocuments(
             databaseId,
@@ -114,7 +132,6 @@ const SignupPage = () => {
     if (!formData.terms) {
       errors.terms = true;
     }
-
     setFieldErrors(errors);
 
     if (Object.values(errors).every((error) => !error)) {
@@ -122,12 +139,53 @@ const SignupPage = () => {
         if (!dealershipId) {
           throw new Error("Dealership not found");
         }
-        // Create customer document in Appwrite
-        const { terms, ...customerDataWithoutTerms } = formData;
-        const response = await createCustomer({
-          ...customerDataWithoutTerms,
-          dealerships: [dealershipId],
-        });
+        let user;
+        try {
+          user = await createUser(formData.email, "password123", formData.name);
+        } catch (e: any) {
+          if (e.code === 409) {
+            //If user already exists, login using session
+            user = await account.createEmailPasswordSession(
+              formData.email,
+              "password123"
+            );
+          } else {
+            throw e;
+          }
+        }
+        // Check if customer already exists
+        if (!databaseId || !customersId) {
+          throw new Error("Database or Customer ids are not defined");
+        }
+        const existingCustomers = await databases.listDocuments(
+          databaseId,
+          customersId,
+          [Query.equal("email", formData.email)]
+        );
+        let response;
+        if (existingCustomers.documents.length > 0) {
+          const customer = existingCustomers.documents[0];
+          // Update existing customer if it doesnt contain the current dealership
+          if (!customer.dealerships.includes(dealershipId)) {
+            response = await databases.updateDocument(
+              databaseId,
+              customersId,
+              customer.$id,
+              {
+                dealerships: [...customer.dealerships, dealershipId],
+              }
+            );
+          } else {
+            response = existingCustomers.documents[0];
+          }
+        } else {
+          // Create customer document in Appwrite
+          const { terms, ...customerDataWithoutTerms } = formData;
+          response = await createCustomer({
+            ...customerDataWithoutTerms,
+            dealerships: [dealershipId],
+          });
+        }
         // Reset form data before redirecting
         setFormData({
           name: "",
@@ -141,8 +199,9 @@ const SignupPage = () => {
           phone: false,
           terms: false,
         });
-
         if (response && response.$id) {
+          // Log in
+          await createUserSession(formData.email, "password123");
           router.push(`/landing/${response.$id}`);
         } else {
           throw new Error("Failed to redirect after creation");
