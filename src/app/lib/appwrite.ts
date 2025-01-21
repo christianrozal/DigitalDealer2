@@ -35,9 +35,15 @@ const createCustomer = async (customerData: CustomerData): Promise<Models.Docume
             customerData
         );
         return response;
-    } catch (e: any) {
-        console.error("Error creating customer document", e);
-        throw e;
+    } catch (e: unknown) {
+        let errorMessage = "Error creating customer document";
+        if(e instanceof Error){
+            errorMessage = e.message;
+        } else if (typeof e === "string") {
+            errorMessage = e
+        }
+        console.error(errorMessage, e);
+        throw new Error(errorMessage)
     }
 };
 
@@ -51,9 +57,15 @@ const createUser = async (email: string, password: string, name: string): Promis
             name
         );
         return response;
-    } catch (error: any) {
-        console.error("Error creating user", error);
-        throw error;
+    } catch (error: unknown) {
+        let errorMessage = "Error creating user";
+        if(error instanceof Error){
+            errorMessage = error.message;
+        } else if (typeof error === "string") {
+            errorMessage = error
+        }
+        console.error(errorMessage, error);
+        throw new Error(errorMessage)
     }
 };
 
@@ -62,9 +74,15 @@ const createUserSession = async (email: string, password: string): Promise<Model
     try {
         const session = await account.createEmailPasswordSession(email, password);
         return session;
-    } catch (error: any) {
-        console.error("Error creating session", error);
-        throw error;
+    } catch (error: unknown) {
+        let errorMessage = "Error creating session";
+        if(error instanceof Error){
+            errorMessage = error.message;
+        } else if (typeof error === "string") {
+            errorMessage = error
+        }
+       console.error(errorMessage, error);
+        throw new Error(errorMessage)
     }
 };
 
@@ -74,7 +92,7 @@ const checkSession = async (): Promise<boolean> => {
         await account.get();
         return true;
     } catch (error) {
-        return false;
+       return false;
     }
 };
 
