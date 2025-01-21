@@ -198,7 +198,7 @@ const SignupPage = () => {
           }
         } else {
           // Create customer document in Appwrite
-          const { ...customerDataWithoutTerms } = formData; // remove terms
+          const { terms, ...customerDataWithoutTerms } = formData;
           response = await createCustomer({
             ...customerDataWithoutTerms,
             dealerships: [dealershipId],
@@ -272,8 +272,8 @@ const SignupPage = () => {
           </h2>
           <h3 className="text-base mt-3">Thank you for visiting us today.</h3>
           <p className="text-xs text-color2 mt-3">
-            We&apos;re excited to help you find your perfect vehicle and provide
-            you with personalised service.
+            We're excited to help you find your perfect vehicle and provide you
+            with personalised service.
           </p>
         </div>
         {/* Input */}
@@ -341,7 +341,7 @@ const SignupPage = () => {
                 label: "text-[10px] text-color2",
               }}
             >
-              I agree to Alexium&apos;s Privacy Policy and Terms of Use.
+              I agree to Alexium's Privacy Policy and Terms of Use.
             </Checkbox>
             {fieldErrors.terms && (
               <span className="text-red-500 text-xs">
