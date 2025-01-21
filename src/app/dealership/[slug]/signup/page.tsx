@@ -12,7 +12,7 @@ import {
 } from "@/app/lib/appwrite";
 import { Query } from "appwrite";
 import Image from "next/image";
-import { Form, Input, Checkbox, Button, Spinner } from "@nextui-org/react";
+import { Form, Input, Checkbox, Button, Spinner } from "@heroui/react";
 import { databaseId, dealershipsId } from "@/app/lib/appwrite";
 
 interface FormData {

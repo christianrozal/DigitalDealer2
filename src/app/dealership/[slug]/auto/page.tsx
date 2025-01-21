@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { account, databases } from "@/app/lib/appwrite";
-import { Avatar, Button } from "@nextui-org/react";
+import { Avatar, Button } from "@heroui/react";
 import { customersId, databaseId } from "@/app/lib/appwrite";
 import { Query } from "appwrite";
 import LogoutButton from "@/app/components/LogoutButton";

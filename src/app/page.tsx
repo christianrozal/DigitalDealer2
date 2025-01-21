@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Button, Select, SelectItem, Spinner } from "@nextui-org/react";
+import { Button, Select, SelectItem, Spinner } from "@heroui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
