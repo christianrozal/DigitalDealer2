@@ -203,7 +203,7 @@ const SignupPage = () => {
           }
         } else {
           // Create customer document in Appwrite
-          const { terms: _, ...customerDataWithoutTerms } = formData; // remove terms
+          const { terms, ...customerDataWithoutTerms } = formData; // remove terms
           response = await createCustomer({
             ...customerDataWithoutTerms,
             dealerships: [dealershipId],
