@@ -3,8 +3,10 @@ import { Button } from "@heroui/react";
 import Image from "next/image";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const ConsultantSlugPage = () => {
+  const router = useRouter();
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const generateVCard = () => {
@@ -141,7 +143,10 @@ END:VCARD`;
           >
             Save Contact
           </Button>
-          <Button className="bg-color3 font-semibold text-sm rounded-full w-full text-color1 mt-5">
+          <Button
+            className="bg-color3 font-semibold text-sm rounded-full w-full text-color1 mt-5"
+            onPress={() => router.push("/consultant/[slug]/book-date")}
+          >
             Book An Appointment
           </Button>
         </div>
