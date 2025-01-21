@@ -198,6 +198,7 @@ const SignupPage = () => {
           }
         } else {
           // Create customer document in Appwrite
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { terms, ...customerDataWithoutTerms } = formData;
           response = await createCustomer({
             ...customerDataWithoutTerms,
